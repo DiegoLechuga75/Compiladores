@@ -1,21 +1,35 @@
 package ParesEImpares;
 
+import java.io.*;
+import java.util.*;
+
 public class Impares0 {
     public static void main(String[] args) {
 
-        String sentencia = "000011100 0010001";
+        List<String> palabras = new ArrayList<String>();
         String palabra;
-        String[] palabras = sentencia.split("\\s+");
         int indice;
         int estado;
         int columna = 0;
         boolean error;
+        try {
+            File myObj = new File(System.getProperty("user.dir") + File.separator + "src/ParesEImpares/fuente.txt");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                palabras.add(data);
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Ocurrió un error, el archivo no fue encontrado.");
+            e.printStackTrace();
+        }
 
         int numPalabra;
 
-        for (numPalabra = 0 ; numPalabra < palabras.length ; numPalabra++){
+        for (numPalabra = 0 ; numPalabra < palabras.size() ; numPalabra++){
 
-            palabra = palabras[numPalabra];
+            palabra = palabras.get(numPalabra);
             indice = 0;
             estado = 0;
             error = false;

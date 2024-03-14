@@ -1,9 +1,12 @@
 package ParesEImpares;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-public class Pares1 {
+public class ExpresionParcial {
     public static void main(String[] args) {
 
         List<String> palabras = new ArrayList<String>();
@@ -13,7 +16,7 @@ public class Pares1 {
         int columna = 0;
         boolean error;
         try {
-            File myObj = new File(System.getProperty("user.dir") + File.separator + "src/ParesEImpares/fuente.txt");
+            File myObj = new File(System.getProperty("user.dir") + File.separator + "EjerciciosClase1/src/ParesEImpares/fuente.txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
@@ -55,9 +58,20 @@ public class Pares1 {
                         break;
                     case 1:
                         if (c == '1') {
-                            estado = 0;
+                            estado = 2;
                         } else if (c == '0') {
                             estado = 1;
+                            indice = palabra.length();
+                        } else {
+                            error = true;
+                            indice = palabra.length();
+                        }
+                        break;
+                    case 2:
+                        if (c == '1') {
+                            estado = 2;
+                        } else if (c == '0') {
+                            estado = 2;
                         } else {
                             error = true;
                             indice = palabra.length();
@@ -70,10 +84,10 @@ public class Pares1 {
             if (error){
                 System.out.println("Caracter invalido en la columna: " + columna);
             } else {
-                if (estado == 0){
+                if (estado == 2){
                     System.out.println("Sintaxis Valida");
                 } else {
-                    System.out.println("Invalido, los unos deben ser un número par");
+                    System.out.println("La expresión que debe seguir la sintaxis es (0 | 1)* 1 1 0*");
                 }
             }
         }
