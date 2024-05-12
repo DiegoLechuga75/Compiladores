@@ -28,7 +28,14 @@ public class Lexico {
         return c;
     }
 
+    private void restartApp(){
+        this.indice = 0;
+        this.entradas = 0;
+        this.estado = 0;
+    }
+
     public int inicio() throws Exception {
+        restartApp();
         char c = ' ';
         do {
             c = siguienteCaracter();

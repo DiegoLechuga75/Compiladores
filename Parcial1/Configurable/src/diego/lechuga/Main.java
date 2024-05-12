@@ -5,10 +5,6 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        int columns;
-        int rows;
-        String setting;
-
         List<String> tokens = new ArrayList<String>();
         List<String> settings = new ArrayList<String>();
 
@@ -25,44 +21,9 @@ public class Main {
             e.printStackTrace();
         }
 
-        //Configuracion de Lexico
+        Settings mySetting = new Settings(settings);
 
-        //Configuracion filas
-
-        setting = settings.get(0);
-        rows = Integer.parseInt(String.valueOf(setting.charAt(0)));
-
-        //Configuracion columnas
-
-        setting = settings.get(0);
-        columns = Integer.parseInt(String.valueOf(setting.charAt(2))) + 1;
-
-        //Configuracion lenguaje
-
-        setting = settings.get(1);
-        String[] languageString = setting.split("\\s+");
-        String aux = "";
-        for (String aux2:languageString){
-            aux += aux2;
-        }
-        char[] languageArr = aux.toCharArray();
-
-        //Declaracion y llenado de arreglo de configuracion
-
-        int[][] matrix = new int[rows][columns];
-        int rowsIndex = 0;
-        for (int i = 2; i < settings.size(); i++){
-            int columnsIndex = 0;
-            setting = settings.get(i);
-            String[] stateString = setting.split("\\s+");
-            for (int position = 0 ; position < stateString.length; position++) {
-                matrix[rowsIndex][columnsIndex] = Integer.parseInt(stateString[position]);
-                columnsIndex++;
-            }
-            rowsIndex++;
-        }
-
-        Lexico app = new Lexico(matrix, languageArr);
+        Lexico app = new Lexico(mySetting.GenerateMatrix(), mySetting.GenerateLanguage());
 
         try {
             File myObj = new File(System.getProperty("user.dir") + File.separator + "Configurable/src/diego/lechuga/fuente.txt");

@@ -1,0 +1,138 @@
+package fes.aragon.compilador;
+import java_cup.runtime.Symbol;
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+
+parser code
+{:
+    public String resultado="";
+    public String variable="";
+    public static LinkedList<TError> TablaES = new LinkedList<TError>();
+    public ArrayList<String> datos=new ArrayList<>();
+    public HashMap<String, String> variables = new HashMap<String, String>();
+
+    public void imprimir(String e){
+        System.out.println("Valor= "+e);
+    }
+
+    public void imprimirVariable(String e, String a){
+        System.out.println("ID: " + e + " - Valor: " + a);
+    }
+    public void syntax_error(Symbol s)
+    {        
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        
+        System.out.println("!Error Sintactico Recuperado!");
+        System.out.println("\t\tLexema: "+lexema);
+        System.out.println("\t\tFila: "+fila);
+        System.out.println("\t\tColumna: "+columna);
+
+        TError datos = new TError(lexema,fila,columna,"Error Sintactico","Caracter no esperado");
+        TablaES.add(datos);
+       
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {        
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        
+        System.out.println("!Error Sintactico");
+        System.out.println("\t\tLexema: "+lexema);
+        System.out.println("\t\tFila: "+fila);
+        System.out.println("\t\tColumna: "+columna);
+
+         TError datos = new TError(lexema,fila,columna,"Error Sintactico","Caracter no esperado");
+        TablaES.add(datos);
+     
+    }
+:}
+
+action code
+{:
+        public void imprimirInterno(String e){
+            System.out.println("Valor_i= "+e);
+        }
+
+        public void imprimirVariableInterno(String e, String a){
+                System.out.println("ID: " + e + " - Valor: " + a);
+            }
+
+:}
+
+terminal IF, ELSE, menorA, mayorA, menorIgual, mayorIgual, igualA, semi, asig, parA, parC, llaveA, llaveC;
+terminal id, num;
+non terminal INICIO, SENTENCIAIFELSE, EXPRESION;
+non terminal String E;
+
+precedence left menorA, mayorA;
+precedence left menorIgual, mayorIgual, igualA;
+
+INICIO::= INICIO SENTENCIAIFELSE
+          |SENTENCIAIFELSE
+;
+
+SENTENCIAIFELSE::= IF E:a llaveA EXPRESION llaveC
+                  |IF E:a llaveA EXPRESION llaveC ELSE llaveA EXPRESION llaveC
+;
+
+EXPRESION::= EXPRESION E:a semi   {:
+                resultado=a;
+                imprimir(a);
+                imprimirInterno(a);
+                datos.add(a);
+            :}
+            |E:a semi   {:
+                resultado=a;
+                imprimir(a);
+                imprimirInterno(a);
+                datos.add(a);
+             :}
+            |EXPRESION id:a asig num:b semi{:
+                variable=a;
+                imprimirVariable(a,b);
+                imprimirVariableInterno(a,b);
+                variables.put(a,b);
+            :}
+            |id:a asig num:b semi{:
+                variable=a;
+                imprimirVariable(a,b);
+                imprimirVariableInterno(a,b);
+                variables.put(a,b);
+            :}
+;
+
+E::= E:a menorA E:b {: int val1= Integer.parseInt(a);
+                    int val2= Integer.parseInt(b);
+                    boolean r = val1<val2;
+                    RESULT = Boolean.toString(r); :}
+    |E:a mayorA E:b {: int val1= Integer.parseInt(a);
+                      int val2= Integer.parseInt(b);
+                    boolean r = val1>val2;
+                    RESULT = Boolean.toString(r); :}
+    |E:a menorIgual E:b {: int val1= Integer.parseInt(a);
+                    int val2= Integer.parseInt(b);
+                    boolean r = val1<=val2;
+                    RESULT = Boolean.toString(r); :}
+    |E:a mayorIgual E:b {: int val1= Integer.parseInt(a);
+                    int val2= Integer.parseInt(b);
+                    boolean r = val1>=val2;
+                    RESULT = Boolean.toString(r); :}
+    |E:a igualA E:b {: int val1= Integer.parseInt(a);
+                        int val2= Integer.parseInt(b);
+                        boolean r = val1==val2;
+                        RESULT = Boolean.toString(r); :}
+    |parA E:a parC{: RESULT = a; :}
+    |num:a {: RESULT = a; :}
+    |id:a {:
+            variable=a;
+            imprimirVariable(a,"null");
+            imprimirVariableInterno(a,"null");
+            variables.put(a,"null");
+            RESULT = variables.get(a); :}
+;
