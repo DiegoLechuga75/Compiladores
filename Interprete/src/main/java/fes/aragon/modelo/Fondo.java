@@ -28,6 +28,7 @@ public class Fondo extends ComponentesJuego {
     private Image imagen;
     private Stage ventana;
     private ArrayList<String> comandos = new ArrayList<>();
+    private ArrayList<String> comandosIniciales = new ArrayList<>();
     private int ancho = 40;
     private int alto = 40;
     private boolean iniciar = false;
@@ -242,7 +243,8 @@ public class Fondo extends ComponentesJuego {
             System.out.println("Encontraste la manzana");
             this.iniciar = false;
             this.indice = 1;
-            this.abrirArchivo();
+            comandos.clear();
+            comandos.addAll(comandosIniciales);
         }
         if (indice < comandos.size()) {
             String string = comandos.get(indice);
@@ -344,7 +346,8 @@ public class Fondo extends ComponentesJuego {
             System.out.println("No encontraste la manzna");
             this.iniciar = false;
             this.indice = 1;
-            this.abrirArchivo();
+            comandos.clear();
+            comandos.addAll(comandosIniciales);
         }
 
     }
@@ -364,6 +367,7 @@ public class Fondo extends ComponentesJuego {
             while ((cad = buff.readLine()) != null) {
                 comandos.add(cad);
             }
+            comandosIniciales = (ArrayList<String>)comandos.clone();
             buff.close();
             fr.close();
         }
